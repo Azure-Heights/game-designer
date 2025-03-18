@@ -1,0 +1,73 @@
+(define "PiecesOwnedBy" (count at:(mapEntry #1)))
+
+//------------------------------------------------------------------------------
+
+(game "Wari Exhibition" 
+    (players 2) 
+    
+    (equipment { 
+        (mancalaBoard 2 6
+            {
+            (track "Track" "1,E,N,W" loop:True)
+            }
+        )
+        (piece "Seed" Shared)
+        (hand Each)
+        (regions P1 (sites Bottom))      // P1 home
+        (regions P2 (sites Top))      // P2 home
+        (map {(pair P1 FirstSite) (pair P2 LastSite)}) // kalahs (storage pits)
+    }) 
+    (rules 
+        
+        (start (set Count 4 to:(sites Track)))
+        
+        (play
+            (move Select
+                (from 
+                    (sites Mover)
+                    if:(> (count at:(from)) 0)		
+                )
+                (then
+                    (and
+                        (sow
+                            apply:(if (= 6 (count at:(to)))
+                                (fromTo
+                                    (from (to))
+                                    (to (mapEntry Mover))
+                                    count:6
+                                )
+                            )
+                        )
+                        (and
+                            (set Score 
+                                P1 
+                                ("PiecesOwnedBy" P1)
+                            )
+                            (set Score 
+                                P2
+                                ("PiecesOwnedBy" P2) 
+                            )
+                        )
+                    )
+                )
+            )
+        )
+        
+        (end ("MancalaByScoreWhen" (no Moves Mover)))
+    )
+)
+
+//------------------------------------------------------------------------------
+
+(metadata 
+    (info
+        {
+        (rules "De här reglerna observerades i Ghana på 1900-talet. >Plocka upp alla pjäser ur ett hål och släpp dem en i taget i hålen i motsols riktning. När spelaren släpper den sista pjäsen i ett hål med fem pjäser så fångas de pjäserna. Spelaren som fångar flest pjäser vinner.")
+        }
+    )
+    
+    (graphics {
+        (board Style Mancala)
+        (board Placement offsetY:-0.3)
+    })
+)
