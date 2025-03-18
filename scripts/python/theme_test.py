@@ -1,19 +1,19 @@
 
 # +-- imports
 
+from dotenv import load_dotenv
+load_dotenv()
+
 from langchain_openai import ChatOpenAI
 
 from langchain_core.runnables import RunnablePassthrough
 from langchain.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain.schema import StrOutputParser
 
-from settings import app_settings
-from .utils import FormatDocs
-
 # --+
 
 
-theme_prompt = ChatPromptTemplate.from_messages([
+theme_prompt = ChatPromptTemplate.from_messages([# +--
     ("system",
      """You are a creative board game designer. Your task is to generate a compelling and unique theme for a board game.
 
@@ -28,10 +28,10 @@ theme_prompt = ChatPromptTemplate.from_messages([
      - "A fantasy world where players control rival dragon clans competing for magical dominance."
      """),
     ("human", "Generate a unique board game theme."),
-])
+])# --+
 
 
-genre_prompt = ChatPromptTemplate.from_messages([
+genre_prompt = ChatPromptTemplate.from_messages([# +--
     ("system",
      """ You are designing a board game with the theme: **{theme}**.
 
@@ -48,10 +48,10 @@ genre_prompt = ChatPromptTemplate.from_messages([
      - Theme: "Rival dragon clans in a fantasy world" → Genre: "Area Control, Combat"
      """),
     ("human", "What is the best genre for the theme \"{theme}\"?"),
-])
+])# --+
 
 
-mechanics_prompt = ChatPromptTemplate.from_messages([
+mechanics_prompt = ChatPromptTemplate.from_messages([# +--
     ("system",
      """ You are designing a board game with the theme **{theme}** and the genre **{genre}**.
 
@@ -69,9 +69,10 @@ mechanics_prompt = ChatPromptTemplate.from_messages([
 
      """),
     ("human", "What are the best mechanics for **{theme}** with the genre **{genre}**?"),
-])
+])# --+
 
 
+llm = ChatOpenAI(model="gpt-4o")
 chain = (
     { "theme": (theme_prompt | llm | StrOutputParser()) }
     | RunnablePassthrough.assign(genre=genre_prompt | llm | StrOutputParser())
@@ -81,5 +82,5 @@ chain = (
 
 if __name__ == "__main__":
 
-    print(chain.invoke())
+    print(chain.invoke({ }))
 
