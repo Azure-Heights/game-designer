@@ -55,5 +55,5 @@ if __name__ == "__main__":
     initial_state = {"ludeme": ludeme, "error_message": None}
     outcome = workflow.invoke(initial_state)
 
-    print("Final State:", outcome)
+    print("Final State:", outcome["ludeme"])
 
